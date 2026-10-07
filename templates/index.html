@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>WattWise | Smart Energy IoT</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">W</div>
+
+        <div>
+            <strong>WattWise</strong>
+            <small>SMART ENERGY OS</small>
+        </div>
+    </div>
+
+    <nav>
+
+        <a href="#" class="nav-link active"
+           data-page="overview">
+            ◉ <span>Energy Overview</span>
+        </a>
+
+        <a href="#" class="nav-link"
+           data-page="devices">
+            ⌁ <span>Device Monitor</span>
+        </a>
+
+        <a href="#" class="nav-link"
+           data-page="trends">
+            ◌ <span>Consumption Trends</span>
+        </a>
+
+        <a href="#" class="nav-link"
+           data-page="events">
+            ⚠ <span>Alerts & Events</span>
+        </a>
+
+    </nav>
+
+    <div class="side-bottom">
+
+        <div class="connection">
+
+            <span>NETWORK STATUS</span>
+
+            <b>
+                <i></i>
+                Simulation Online
+            </b>
+
+            <small>5 virtual IoT nodes</small>
+
+        </div>
+
+        <p>
+            Software-only IoT prototype<br>
+            Python + Flask
+        </p>
+
+    </div>
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <div>
+
+        <div class="eyebrow">
+            IOT ENERGY INTELLIGENCE
+        </div>
+
+        <h1>
+            Power, <span>made visible.</span>
+        </h1>
+
+        <p>
+            Monitor simulated household devices,
+            understand consumption and spot inefficient
+            loads in real time.
+        </p>
+
+    </div>
+
+    <div class="header-right">
+
+        <div class="live">
+            <i></i>
+            LIVE
+            <span id="clock">--:--:--</span>
+        </div>
+
+        <button
+            onclick="simulateEvent()"
+            class="spark">
+            ✦
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     PAGE 1: ENERGY OVERVIEW
+===================================================== -->
+
+<section id="page-overview" class="page active-page">
+
+    <section class="hero-row">
+
+        <div class="hero panel">
+
+            <span class="label">
+                CURRENT LOAD
+            </span>
+
+            <div class="big-number">
+
+                <span id="totalKw">--</span>
+
+                <small>
+                    kW
+                </small>
+
+            </div>
+
+            <div class="status">
+                <i></i>
+                System operating normally
+            </div>
+
+            <div class="power-orb">
+                <div></div>
+            </div>
+
+            <div class="hero-bottom">
+
+                <div>
+                    <span>EFFICIENCY</span>
+                    <b id="efficiency">--%</b>
+                </div>
+
+                <div>
+                    <span>EST. SAVING</span>
+                    <b id="saving">--%</b>
+                </div>
+
+                <div>
+                    <span>NODES</span>
+                    <b>05</b>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="metric panel">
+
+            <div class="metric-symbol">
+                ⚡
+            </div>
+
+            <span class="label">
+                TODAY'S ENERGY
+            </span>
+
+            <strong id="dailyKwh">
+                --
+            </strong>
+
+            <em>
+                kWh
+            </em>
+
+            <div class="micro-bar">
+                <i id="energyBar"></i>
+            </div>
+
+            <small>
+                Simulated smart-meter reading
+            </small>
+
+        </div>
+
+
+        <div class="metric panel">
+
+            <div class="metric-symbol">
+                ₹
+            </div>
+
+            <span class="label">
+                ESTIMATED COST
+            </span>
+
+            <strong id="cost">
+                --
+            </strong>
+
+            <em>
+                / day
+            </em>
+
+            <small>
+                Illustrative rate: ₹8 / kWh
+            </small>
+
+            <div class="cost-line">
+                ▁▂▃▅▆▅▃▂▁
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="main-grid">
+
+        <div class="panel chart-panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        CONSUMPTION ANALYTICS
+                    </span>
+
+                    <h2>
+                        Live power demand
+                    </h2>
+
+                </div>
+
+                <span class="badge">
+                    SIMULATED IOT DATA
+                </span>
+
+            </div>
+
+            <canvas id="powerChart"></canvas>
+
+            <div class="chart-caption">
+
+                <span>
+                    Data refreshes every 3 seconds
+                </span>
+
+                <b>
+                    Adaptive monitoring enabled
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel devices-panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        VIRTUAL NODES
+                    </span>
+
+                    <h2>
+                        Device monitor
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div id="devices"
+                 class="devices">
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="bottom-grid">
+
+        <div class="panel events-panel">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        INTELLIGENCE STREAM
+                    </span>
+
+                    <h2>
+                        Recent events
+                    </h2>
+
+                </div>
+
+                <button
+                    class="small-button"
+                    onclick="simulateEvent()">
+
+                    GENERATE EVENT
+
+                </button>
+
+            </div>
+
+            <div id="events"
+                 class="events">
+            </div>
+
+        </div>
+
+
+        <div class="panel architecture">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        IOT ARCHITECTURE
+                    </span>
+
+                    <h2>
+                        How it works
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div class="flow">
+
+                <div>
+                    <b>01</b>
+                    <span>Virtual Sensors</span>
+                    <small>Device data</small>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <b>02</b>
+                    <span>Python Engine</span>
+                    <small>Processing</small>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <b>03</b>
+                    <span>Flask API</span>
+                    <small>Data service</small>
+                </div>
+
+                <i>→</i>
+
+                <div>
+                    <b>04</b>
+                    <span>Dashboard</span>
+                    <small>Visualisation</small>
+                </div>
+
+            </div>
+
+            <div class="architecture-note">
+
+                Hardware-free IoT prototype.
+                Real sensor feeds can replace the
+                simulation layer later.
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<!-- =====================================================
+     PAGE 2: DEVICE MONITOR
+===================================================== -->
+
+<section id="page-devices"
+         class="page">
+
+    <div class="page-title">
+
+        <div class="eyebrow">
+            IOT DEVICE MANAGEMENT
+        </div>
+
+        <h2>
+            Device Monitor
+        </h2>
+
+        <p>
+            Monitor and control your virtual IoT
+            household devices.
+        </p>
+
+    </div>
+
+    <div id="deviceGrid"
+         class="device-grid">
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PAGE 3: CONSUMPTION TRENDS
+===================================================== -->
+
+<section id="page-trends"
+         class="page">
+
+    <div class="page-title">
+
+        <div class="eyebrow">
+            ENERGY ANALYTICS
+        </div>
+
+        <h2>
+            Consumption Trends
+        </h2>
+
+        <p>
+            Analyze simulated electricity demand
+            and estimated energy costs.
+        </p>
+
+    </div>
+
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <span>
+                CURRENT LOAD
+            </span>
+
+            <strong id="trendLoad">
+                --
+            </strong>
+
+            <small>kW</small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                DAILY ENERGY
+            </span>
+
+            <strong id="trendEnergy">
+                --
+            </strong>
+
+            <small>kWh</small>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>
+                ESTIMATED COST
+            </span>
+
+            <strong id="trendCost">
+                --
+            </strong>
+
+            <small>/day</small>
+
+        </div>
+
+    </div>
+
+
+    <div class="trend-grid">
+
+        <div class="panel trend-card">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        LIVE DATA
+                    </span>
+
+                    <h2>
+                        Power Demand
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <canvas id="trendPowerChart"></canvas>
+
+        </div>
+
+
+        <div class="panel trend-card">
+
+            <div class="panel-head">
+
+                <div>
+
+                    <span class="label">
+                        DEVICE ANALYTICS
+                    </span>
+
+                    <h2>
+                        Device Consumption
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <canvas id="deviceChart"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PAGE 4: ALERTS & EVENTS
+===================================================== -->
+
+<section id="page-events"
+         class="page">
+
+    <div class="page-title">
+
+        <div class="eyebrow">
+            SYSTEM INTELLIGENCE
+        </div>
+
+        <h2>
+            Alerts & Events
+        </h2>
+
+        <p>
+            Monitor alerts, device activity and
+            system-generated events.
+        </p>
+
+    </div>
+
+
+    <div class="panel full-events">
+
+        <div class="panel-head">
+
+            <div>
+
+                <span class="label">
+                    EVENT LOG
+                </span>
+
+                <h2>
+                    System Activity
+                </h2>
+
+            </div>
+
+            <div class="event-actions">
+
+                <button
+                    class="small-button"
+                    onclick="simulateEvent()">
+
+                    GENERATE EVENT
+
+                </button>
+
+                <button
+                    class="danger-button"
+                    onclick="clearEventDisplay()">
+
+                    CLEAR VIEW
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="fullEventList"
+             class="full-event-list">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <span>
+        ◈ WattWise Smart Energy Monitoring
+    </span>
+
+    <span>
+        Computer Engineering · Software IoT Prototype
+    </span>
+
+</footer>
+
+</main>
+
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+
+</html>
